@@ -307,6 +307,15 @@ void StatsView::setTheme(int idx)
 	rootNode->backgroundNode->setColor(currentTheme->backgroundColor);
 }
 
+QStringList StatsView::getThemes() const
+{
+	QStringList res;
+	res.reserve(statsThemes.size());
+	for (const StatsTheme *theme: statsThemes)
+		res.push_back(theme->name());
+	return res;
+}
+
 const StatsTheme &StatsView::getCurrentTheme() const
 {
 	return *currentTheme;
