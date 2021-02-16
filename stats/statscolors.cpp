@@ -76,5 +76,71 @@ private:
 	}
 };
 
+static const QColor binColorsDark[] = {
+	QRgb(0xffef73), QRgb(0xf0e36d), QRgb(0xe5d867), QRgb(0xdcce62), QRgb(0xd5c45c),
+	QRgb(0xcebb57), QRgb(0xc8b151), QRgb(0xc1a74c), QRgb(0xbb9e47), QRgb(0xb49442),
+	QRgb(0xad8b3d), QRgb(0xa78138), QRgb(0x9f7733), QRgb(0x986e2f), QRgb(0x90642b),
+	QRgb(0x875a27), QRgb(0x7e5124), QRgb(0x754720), QRgb(0x6a3d1d), QRgb(0x5f341b),
+	QRgb(0x532a19), QRgb(0x462118), QRgb(0x381818), QRgb(0x281018), QRgb(0x15071b),
+	QRgb(0x000a27), QRgb(0x00152f), QRgb(0x001f37), QRgb(0x002a3f), QRgb(0x003547),
+	QRgb(0x00404f), QRgb(0x004b57), QRgb(0x005660), QRgb(0x036167), QRgb(0x066b6f),
+	QRgb(0x0b7476), QRgb(0x0f7e7d), QRgb(0x158784), QRgb(0x1b908b), QRgb(0x219991),
+	QRgb(0x28a198), QRgb(0x30a99e), QRgb(0x39b0a4), QRgb(0x42b7aa), QRgb(0x4cbcb0),
+	QRgb(0x57c1b6), QRgb(0x62c5bb), QRgb(0x6fc7c0), QRgb(0x7cc9c5), QRgb(0x8bcaca)
+};
+
+class StatsThemeDark : public StatsTheme {
+public:
+	StatsThemeDark()
+	{
+		backgroundColor = Qt::black;
+		fillColor = QColor(0xbb, 0x89, 0x55);
+		borderColor = QColor(0x99, 0x4d, 0x00);
+		selectedColor = QColor(0x55, 0x89, 0xbb);
+		selectedBorderColor = QColor(0x00, 0x4d, 0x99);
+		highlightedColor = Qt::blue;
+		highlightedBorderColor = QColor(0x55, 0x55, 0xdd);
+		darkLabelColor = Qt::white;
+		lightLabelColor = Qt::black;
+		axisColor = Qt::white;
+		gridColor = QColor(0x33, 0x33, 0x33);
+		informationBorderColor = Qt::white;
+		informationColor = QColor(0x00, 0x00, 0xff, 192); // Note: fourth argument is opacity
+		legendColor = QColor(0xff, 0x71, 0x33, 192); // Note: fourth argument is opacity
+		legendBorderColor = Qt::white;
+		quartileMarkerColor = Qt::cyan;
+		regressionItemColor = Qt::cyan;
+		meanMarkerColor = Qt::magenta;
+		medianMarkerColor = Qt::cyan;
+		selectionLassoColor = Qt::white;
+		selectionOverlayColor = Qt::darkGray;
+	}
+private:
+	QString name() const
+	{
+		return StatsTranslations::tr("Dark");
+	}
+
+	// Pick roughly equidistant colors out of the color set above
+	// if we need more bins than we have colors (what chart is THAT?) simply loop
+	QColor binColor(int bin, int numBins) const override
+	{
+		if (numBins == 1 || bin < 0 || bin >= numBins)
+			return fillColor;
+		if (numBins > (int)std::size(binColorsDark))
+			return binColors[bin % std::size(binColorsDark)];
+
+		// use integer math to spread out the indices
+		int idx = bin * (std::size(binColors) - 1) / (numBins - 1);
+		return binColors[idx];
+	}
+
+	QColor labelColor(int bin, size_t numBins) const override
+	{
+		return (binColor(bin, numBins).lightness() < 150) ? darkLabelColor : lightLabelColor;
+	}
+};
+
 static StatsThemeLight statsThemeLight;
-std::vector<const StatsTheme *> statsThemes = { &statsThemeLight };
+static StatsThemeDark statsThemeDark;
+std::vector<const StatsTheme *> statsThemes = { &statsThemeLight, &statsThemeDark };
