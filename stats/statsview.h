@@ -6,7 +6,6 @@
 #include "statshelper.h"
 #include "statsselection.h"
 #include <memory>
-#include <QFont>
 #include <QImage>
 #include <QPainter>
 #include <QQuickItem>
@@ -140,7 +139,6 @@ private:
 
 	StatsState state;
 	const StatsTheme *currentTheme;
-	QFont titleFont;
 	std::vector<std::unique_ptr<StatsSeries>> series;
 	std::unique_ptr<StatsGrid> grid;
 	std::vector<ChartItemPtr<QuartileMarker>> quartileMarkers;
