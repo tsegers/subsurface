@@ -141,6 +141,16 @@ private:
 	}
 };
 
-static StatsThemeLight statsThemeLight;
-static StatsThemeDark statsThemeDark;
-std::vector<const StatsTheme *> statsThemes = { &statsThemeLight, &statsThemeDark };
+// The vector of themes is generated on first use. Thus, the constructors are run
+// once the overall application is initialized. This ensures that the themes'
+// constructors can access the settings, etc.
+static std::vector<std::unique_ptr<const StatsTheme>> statsThemes;
+const std::vector<std::unique_ptr<const StatsTheme>> &getStatsThemes()
+{
+	if (statsThemes.empty()) {
+		statsThemes.reserve(2);
+		statsThemes.emplace_back(new StatsThemeLight);
+		statsThemes.emplace_back(new StatsThemeDark);
+	}
+	return statsThemes;
+}
