@@ -5,6 +5,7 @@
 #include "divepixmapitem.h"
 
 class DiveCartesianAxis;
+class DivePixmapCache;
 class DivePlotDataModel;
 struct event;
 
@@ -13,7 +14,7 @@ class DiveEventItem : public DivePixmapItem {
 public:
 	DiveEventItem(const struct dive *d, struct event *ev, struct gasmix lastgasmix,
 		      DivePlotDataModel *model, DiveCartesianAxis *hAxis, DiveCartesianAxis *vAxis,
-		      int speed, double dpr, QGraphicsItem *parent = nullptr);
+		      int speed, const DivePixmapCache &pixmaps, QGraphicsItem *parent = nullptr);
 	~DiveEventItem();
 	const struct event *getEvent() const;
 	struct event *getEventMutable();
@@ -28,7 +29,7 @@ slots:
 
 private:
 	void setupToolTipString(struct gasmix lastgasmix);
-	void setupPixmap(struct gasmix lastgasmix, double dpr);
+	void setupPixmap(struct gasmix lastgasmix, const DivePixmapCache &pixmaps);
 	int depthAtTime(int time);
 	DiveCartesianAxis *vAxis;
 	DiveCartesianAxis *hAxis;

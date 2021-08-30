@@ -3,6 +3,7 @@
 #include "diveeventitem.h"
 #include "divecartesianaxis.h"
 #include "divepercentageitem.h"
+#include "divepixmapcache.h"
 #include "diveprofileitem.h"
 #include "divetextitem.h"
 #include "tankitem.h"
@@ -71,7 +72,8 @@ ProfileScene::ProfileScene(double dpr, bool printMode, bool isGrayscale) :
 	decoModelParameters(new DiveTextItem(dpr, 1.0, Qt::AlignHCenter | Qt::AlignTop)),
 	heartBeatItem(createItem<DiveHeartrateItem>(*heartBeatAxis, DivePlotDataModel::HEARTBEAT, 1, dpr)),
 	percentageItem(new DivePercentageItem(*timeAxis, *percentageAxis, dpr)),
-	tankItem(new TankItem(*timeAxis, dpr))
+	tankItem(new TankItem(*timeAxis, dpr)),
+	pixmaps(new DivePixmapCache(dpr))
 {
 	init_plot_info(&plotInfo);
 
