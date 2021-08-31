@@ -500,8 +500,8 @@ void ProfileScene::plotDive(const struct dive *dIn, int dcIn, DivePlannerPointsM
 		// printMode is always selected for SUBSURFACE_MOBILE due to font problems
 		// BUT events are wanted.
 #endif
-		if (DiveEventItem::isInteresting(d, current_dc, event, *dataModel)) {
-			auto item = new DiveEventItem(d, event, lastgasmix, dataModel,
+		if (DiveEventItem::isInteresting(d, current_dc, event, plotInfo)) {
+			auto item = new DiveEventItem(d, event, lastgasmix, plotInfo,
 						      timeAxis, profileYAxis, animSpeed, dpr);
 			item->setZValue(2);
 			addItem(item);
