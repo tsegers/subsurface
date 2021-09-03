@@ -1208,13 +1208,26 @@ static void fixup_no_o2sensors(struct divecomputer *dc)
 	}
 }
 
+/* Remove sensor and gas pressure info */
+static void clear_sensor(struct sample *samples, int sample_id, int sensor_id)
+{
+	struct sample *s = &samples[sample_id];
+	if (sample_id == 0) {
+		s->sensor[sensor_id] = 0;
+		s->pressure[sensor_id].mbar = 0;
+	} else {
+		s->sensor[sensor_id] = s[-1].sensor[sensor_id];
+		s->pressure[sensor_id].mbar = s[-1].pressure[sensor_id].mbar;
+	}
+}
+
 static void fixup_dc_sample_sensors(struct divecomputer *dc, int nr_cylinders)
 {
 	for (int i = 0; i < dc->samples; i++) {
 		struct sample *s = dc->sample + i;
 		for (int j = 0; j < MAX_SENSORS; j++) {
 			if (s->sensor[j] < 0 || s->sensor[j] >= nr_cylinders)
-				s->sensor[j] = NO_SENSOR;
+				clear_sensor(dc->sample, i, j);
 		}
 	}
 }
@@ -1680,14 +1693,7 @@ static void sample_renumber(struct sample *s, int i, const int mapping[])
 		if (s->sensor[j] != NO_SENSOR)
 			sensor = mapping[s->sensor[j]];
 		if (sensor == -1) {
-			// Remove sensor and gas pressure info
-			if (i == 0) {
-				s->sensor[j] = 0;
-				s->pressure[j].mbar = 0;
-			} else {
-				s->sensor[j] = s[-1].sensor[j];
-				s->pressure[j].mbar = s[-1].pressure[j].mbar;
-			}
+			clear_sensor(s, i, j);
 		} else {
 			s->sensor[j] = sensor;
 		}
